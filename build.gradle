@@ -49,6 +49,10 @@ graalvmNative.toolchainDetection = false
 micronaut {
     runtime("netty")
     testRuntime("junit5")
+    testResources {
+        // In CI we use a MySQL service container; locally Testcontainers can provide MySQL
+        enabled.set(providers.environmentVariable("CI").map { _ -> false }.orElse(true))
+    }
     processing {
         incremental(true)
         annotations("com.piyal.*")
