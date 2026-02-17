@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      MICRONAUT_DATASOURCES_DEFAULT_URL: jdbc:mysql://db:3306/mn_playground
+      MICRONAUT_DATASOURCES_DEFAULT_USERNAME: root
+      MICRONAUT_DATASOURCES_DEFAULT_PASSWORD: password
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mn_playground
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
